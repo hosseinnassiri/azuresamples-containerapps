@@ -13,6 +13,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: generate version number
         id: version
