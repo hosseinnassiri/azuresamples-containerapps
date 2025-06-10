@@ -1,10 +1,10 @@
 # Azure Container Apps
 
-To practice azure container apps.
+Azure Container Apps is a serverless platform that allows you to maintain less infrastructure and save costs while running containerized applications.
 
 ## Prerequisites
 
-* An Azure account with an active subscription.
+* An Azure account with an active subscription, with the Microsoft.App resource provider registered.
 * A GitHub account.
 * A GitHub repository to store your Bicep files and your workflow files.
 * An environment for the GitHub repository to deploy the code.
