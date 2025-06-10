@@ -35,6 +35,8 @@ jobs:
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
+          scope: 'resourcegroup'
+          deploymentName: ${{ github.run_number }}
           template: ./iac/main.bicep
           parameters: ""
           failOnStdErr: false
