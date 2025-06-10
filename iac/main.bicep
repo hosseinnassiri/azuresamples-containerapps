@@ -63,7 +63,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
       }
     }
   }
-  kind: 'containerapp'
   identity: {
     type: 'SystemAssigned'
   }
