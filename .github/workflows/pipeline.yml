@@ -1,5 +1,5 @@
 name: Deploy infrastructure
-run-name: ${{ steps.version.outputs.number }} ${{ github.event_name }} from branch ${{ github.ref }} by @${{ github.actor }}
+run-name: '${{ github.event.inputs.environment }} - ${{ github.run_id }} - by @${{ github.actor }}'
 permissions:
   id-token: write
   contents: read
@@ -36,7 +36,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           scope: 'resourcegroup'
-          deploymentName: ${{ github.run_number }}
+          deploymentName: ${{ github.run_id }}
           template: ./iac/main.bicep
           parameters: ""
           failOnStdErr: false
