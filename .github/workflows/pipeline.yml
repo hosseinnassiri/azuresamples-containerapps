@@ -1,4 +1,4 @@
-name: Deploy infrastructure
+name: deploy-iac
 run-name: '${{ github.event_name }} - ${{ github.run_id }} - by @${{ github.actor }}'
 permissions:
   id-token: write
@@ -15,12 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
-      - name: generate version number
-        id: version
-        run: |
-          version_number=$(date +'%Y-%m-%d')-${{ github.run_number }}
-          echo "number=${version_number}" >> "$GITHUB_OUTPUT"
-
       - name: checkout code
         uses: actions/checkout@main
 
@@ -36,7 +30,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           scope: 'resourcegroup'
-          deploymentName: '${{ github.event_name }}-${{ github.run_id }}'
+          deploymentName: '${{ github.workflow }}-${{ github.run_id }}'
           template: ./iac/main.bicep
           parameters: ""
           failOnStdErr: false
