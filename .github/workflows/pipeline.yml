@@ -1,5 +1,5 @@
 name: deploy-iac
-run-name: '${{ github.event_name }} - ${{ github.run_id }} - by @${{ github.actor }}'
+run-name: "${{ github.event_name }} - ${{ github.run_id }} - by @${{ github.actor }}"
 permissions:
   id-token: write
   contents: read
@@ -29,8 +29,8 @@ jobs:
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
-          scope: 'resourcegroup'
-          deploymentName: '${{ github.workflow }}-${{ github.run_id }}'
+          scope: "resourcegroup"
+          deploymentName: "${{ github.workflow }}-${{ github.run_id }}"
           template: ./iac/main.bicep
           parameters: ""
           failOnStdErr: false
