@@ -50,24 +50,24 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' =
   }
 }
 
-// var environmentName = 'cae-${appName}-cace-${environment}-01'
-// resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
-//   name: environmentName
-//   location: location
-//   properties: {
-//     appLogsConfiguration: {
-//       destination: 'log-analytics'
-//       logAnalyticsConfiguration: {
-//         customerId: logAnalyticsWorkspace.properties.customerId
-//         sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-//       }
-//     }
-//   }
-//   kind: 'containerapp'
-//   identity: {
-//     type: 'SystemAssigned'
-//   }
-// }
+var environmentName = 'cae-${appName}-cace-${environment}-01'
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
+  name: environmentName
+  location: location
+  properties: {
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalyticsWorkspace.properties.customerId
+        sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+      }
+    }
+  }
+  kind: 'containerapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+}
 
 // var containerAppsName = 'ca-${appName}-cace-${environment}-01'
 // resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
