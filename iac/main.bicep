@@ -35,7 +35,7 @@ output connectionString string = applicationInsights.properties.ConnectionString
 output instrumentationKey string = applicationInsights.properties.InstrumentationKey
 output name string = applicationInsights.name
 
-var containerRegistryName = 'cr-${appName}-cace-${environment}-01'
+var containerRegistryName = 'cr${appName}cace${environment}01'
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
   name: containerRegistryName
   location: location
