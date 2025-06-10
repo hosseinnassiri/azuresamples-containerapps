@@ -1,5 +1,5 @@
 name: Deploy infrastructure
-run-name: ${{ github.event_name }} from branch ${{ github.ref }} by @${{ github.actor }}
+run-name: ${{ steps.version.outputs.number }} ${{ github.event_name }} from branch ${{ github.ref }} by @${{ github.actor }}
 permissions:
   id-token: write
   contents: read
