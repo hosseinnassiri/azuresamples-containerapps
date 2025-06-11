@@ -92,7 +92,7 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
       }
       registries: [
         {
-          // identity: uai.id
+          identity: containerRegistry.identity.principalId
           server: containerRegistry.properties.loginServer
         }
       ]
@@ -103,13 +103,14 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
 output containerAppFQDN string = containerApps.properties.configuration.ingress.fqdn
 // output containerImage string = acrImportImage.outputs.importedImages[0].acrHostedImage
 
-// var acrPullRole = resourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
-// @description('This allows the managed identity of the container app to access the registry, note scope is applied to the wider ResourceGroup not the ACR')
-// resource uaiRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(resourceGroup().id, uai.id, acrPullRole)
-//   properties: {
-//     roleDefinitionId: acrPullRole
-//     principalId: uai.properties.principalId
-//     principalType: 'ServicePrincipal'
-//   }
-// }
+var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+
+resource acrPullAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerRegistry.id, containerApps.id, acrPullRole)
+  scope: containerRegistry
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRole)
+    principalId: containerApps.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
