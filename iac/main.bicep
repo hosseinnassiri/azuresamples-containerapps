@@ -49,7 +49,10 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' =
     name: 'Basic'
   }
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${uai.id}': {}
+    }
   }
   properties: {
     adminUserEnabled: true
@@ -62,7 +65,10 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
   name: environmentName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${uai.id}': {}
+    }
   }
   properties: {
     appLogsConfiguration: {
