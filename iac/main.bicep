@@ -87,55 +87,55 @@ resource acrPullAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' 
   }
 }
 
-@description('Specifies the docker container image to deploy.')
-param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+// @description('Specifies the docker container image to deploy.')
+// param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
-var containerAppsName = 'ca-${appName}-cace-${environment}-01'
-resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
-  name: containerAppsName
-  location: location
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${uai.id}': {}
-    }
-  }
-  properties: {
-    managedEnvironmentId: containerAppEnvironment.id
-    configuration: {
-      ingress: {
-        external: true
-        targetPort: 80
-        allowInsecure: false
-        traffic: [
-          {
-            latestRevision: true
-            weight: 100
-          }
-        ]
-      }
-      registries: [
-        {
-          identity: uai.id
-          server: containerRegistry.properties.loginServer
-        }
-      ]
-    }
-    template: {
-      revisionSuffix: 'firstrevision'
-      containers: [
-        {
-          name: containerAppsName
-          image: containerImage
-          resources: {
-            cpu: json('.25')
-            memory: '.5Gi'
-          }
-        }
-      ]
-    }
-  }
-}
+// var containerAppsName = 'ca-${appName}-cace-${environment}-01'
+// resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
+//   name: containerAppsName
+//   location: location
+//   identity: {
+//     type: 'UserAssigned'
+//     userAssignedIdentities: {
+//       '${uai.id}': {}
+//     }
+//   }
+//   properties: {
+//     managedEnvironmentId: containerAppEnvironment.id
+//     configuration: {
+//       ingress: {
+//         external: true
+//         targetPort: 80
+//         allowInsecure: false
+//         traffic: [
+//           {
+//             latestRevision: true
+//             weight: 100
+//           }
+//         ]
+//       }
+//       registries: [
+//         {
+//           identity: uai.id
+//           server: containerRegistry.properties.loginServer
+//         }
+//       ]
+//     }
+//     template: {
+//       revisionSuffix: 'firstrevision'
+//       containers: [
+//         {
+//           name: containerAppsName
+//           image: containerImage
+//           resources: {
+//             cpu: json('.25')
+//             memory: '.5Gi'
+//           }
+//         }
+//       ]
+//     }
+//   }
+// }
 
-output containerAppFQDN string = containerApps.properties.configuration.ingress.fqdn
+// output containerAppFQDN string = containerApps.properties.configuration.ingress.fqdn
 // output containerImage string = acrImportImage.outputs.importedImages[0].acrHostedImage
