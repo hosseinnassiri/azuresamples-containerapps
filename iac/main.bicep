@@ -35,6 +35,12 @@ output connectionString string = applicationInsights.properties.ConnectionString
 output instrumentationKey string = applicationInsights.properties.InstrumentationKey
 output name string = applicationInsights.name
 
+var userAssignedIdentityName = 'id-${appName}-cace-${environment}-01'
+resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
+  name: userAssignedIdentityName
+  location: location
+}
+
 var containerRegistryName = 'cr${appName}cace${environment}01'
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
   name: containerRegistryName
@@ -69,6 +75,18 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
   }
 }
 
+var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+
+resource acrPullAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerRegistry.id, containerApps.id, acrPullRole)
+  scope: containerRegistry
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRole)
+    principalId: uai.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 @description('Specifies the docker container image to deploy.')
 param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
@@ -77,7 +95,10 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
   name: containerAppsName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${uai.id}': {}
+    }
   }
   properties: {
     managedEnvironmentId: containerAppEnvironment.id
@@ -95,7 +116,7 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
       }
       registries: [
         {
-          identity: containerRegistry.identity.principalId
+          identity: uai.id
           server: containerRegistry.properties.loginServer
         }
       ]
@@ -118,15 +139,3 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
 
 output containerAppFQDN string = containerApps.properties.configuration.ingress.fqdn
 // output containerImage string = acrImportImage.outputs.importedImages[0].acrHostedImage
-
-var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-
-resource acrPullAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerRegistry.id, containerApps.id, acrPullRole)
-  scope: containerRegistry
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRole)
-    principalId: containerApps.identity.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
