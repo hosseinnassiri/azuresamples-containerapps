@@ -18,6 +18,11 @@ jobs:
       - name: checkout code
         uses: actions/checkout@main
 
+      - name: install azure-cli 2.72.0
+        run: |
+          sudo apt-get remove -y azure-cli
+          pip install azure-cli==2.72.0
+
       - name: az login
         uses: azure/login@v2
         with:
