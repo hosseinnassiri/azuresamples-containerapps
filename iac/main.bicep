@@ -78,7 +78,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
 var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 
 resource acrPullAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerRegistry.id, containerApps.id, acrPullRole)
+  name: guid(containerRegistry.id, uai.id, acrPullRole)
   scope: containerRegistry
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRole)
