@@ -69,48 +69,64 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
   }
 }
 
-// var containerAppsName = 'ca-${appName}-cace-${environment}-01'
-// resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
-//   name: containerAppsName
-//   location: location
-//   identity: {
-//     type: 'SystemAssigned'
-//   }
-//   properties: {
-//     managedEnvironmentId: containerAppEnvironment.id
-//     configuration: {
-//       ingress: {
-//         external: true
-//         targetPort: 80
-//         allowInsecure: false
-//         traffic: [
-//           {
-//             latestRevision: true
-//             weight: 100
-//           }
-//         ]
-//       }
-//       registries: [
-//         {
-//           identity: containerRegistry.identity.principalId
-//           server: containerRegistry.properties.loginServer
-//         }
-//       ]
-//     }
-//   }
-// }
+@description('Specifies the docker container image to deploy.')
+param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
-// output containerAppFQDN string = containerApps.properties.configuration.ingress.fqdn
-// // output containerImage string = acrImportImage.outputs.importedImages[0].acrHostedImage
+var containerAppsName = 'ca-${appName}-cace-${environment}-01'
+resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
+  name: containerAppsName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    managedEnvironmentId: containerAppEnvironment.id
+    configuration: {
+      ingress: {
+        external: true
+        targetPort: 80
+        allowInsecure: false
+        traffic: [
+          {
+            latestRevision: true
+            weight: 100
+          }
+        ]
+      }
+      registries: [
+        {
+          identity: containerRegistry.identity.principalId
+          server: containerRegistry.properties.loginServer
+        }
+      ]
+    }
+    template: {
+      revisionSuffix: 'firstrevision'
+      containers: [
+        {
+          name: containerAppsName
+          image: containerImage
+          resources: {
+            cpu: json('.25')
+            memory: '.5Gi'
+          }
+        }
+      ]
+    }
+  }
+}
 
-// var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+output containerAppFQDN string = containerApps.properties.configuration.ingress.fqdn
+// output containerImage string = acrImportImage.outputs.importedImages[0].acrHostedImage
 
-// resource acrPullAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(containerRegistry.id, containerApps.id, acrPullRole)
-//   scope: containerRegistry
-//   properties: {
-//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRole)
-//     principalId: containerApps.identity.principalId
-//     principalType: 'ServicePrincipal'
-//   }
-// }
+var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+
+resource acrPullAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerRegistry.id, containerApps.id, acrPullRole)
+  scope: containerRegistry
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', acrPullRole)
+    principalId: containerApps.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
