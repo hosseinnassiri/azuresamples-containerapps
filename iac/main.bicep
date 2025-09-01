@@ -5,7 +5,7 @@ param appName string = 'containerapp'
 
 param environment string = 'dev'
 
-param containerImageName string = 'containerapps-helloworld'
+param containerImageName string = 'azuredocs/containerapps-helloworld'
 
 var coreResourceGroup = 'rg-core-cace-${environment}-01'
 
