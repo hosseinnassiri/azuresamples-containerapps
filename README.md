@@ -56,3 +56,5 @@ permissions:
 ```
 
 For more information, visit [Deploy Bicep files by using GitHub Actions](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-github-actions?tabs=CLI%2Copenid)
+
+<https://docs.azure.cn/en-us/container-apps/environment#types>
