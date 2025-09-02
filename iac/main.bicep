@@ -67,7 +67,7 @@ module mshelloworld './aca.bicep' = {
 module dockerhelloworld './aca.bicep' = {
   name: 'docker-helloworld'
   params: {
-    containerAppsName: 'ca-${appName}-cace-${environment}-01'
+    containerAppsName: 'ca-${appName}-cace-${environment}-02'
     managedEnvironmentId: containerAppEnvironment.id
     userAssignedIdentity: uai.id
     registryUrl: acr.properties.loginServer
