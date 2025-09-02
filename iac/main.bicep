@@ -99,8 +99,8 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
             cpu: json('.25')
             memory: '.5Gi'
           }
-        },
-         {
+        }
+        {
           name: 'docker-helloworld'
           image: '${acr.properties.loginServer}/library/hello-world:latest'
           resources: {
