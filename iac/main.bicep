@@ -58,59 +58,24 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
   }
 }
 
-var containerAppsName = 'ca-${appName}-cace-${environment}-01'
-resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
-  name: containerAppsName
-  location: location
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${uai.id}': {}
-    }
-  }
-  properties: {
+module mshelloworld './aca.bicep' = {
+  name: 'ms-helloworld'
+  params: {
+    containerAppsName: 'ca-${appName}-cace-${environment}-01'
     managedEnvironmentId: containerAppEnvironment.id
-    configuration: {
-      ingress: {
-        external: true
-        targetPort: 80
-        allowInsecure: false
-        traffic: [
-          {
-            latestRevision: true
-            weight: 100
-          }
-        ]
-      }
-      registries: [
-        {
-          identity: uai.id
-          server: acr.properties.loginServer
-        }
-      ]
-    }
-    template: {
-      revisionSuffix: 'rev1'
-      containers: [
-        {
-          name: 'azuredocs-helloworld'
-          image: '${acr.properties.loginServer}/${containerImageName}'
-          resources: {
-            cpu: json('.25')
-            memory: '.5Gi'
-          }
-        }
-        {
-          name: 'docker-helloworld'
-          image: '${acr.properties.loginServer}/library/hello-world:latest'
-          resources: {
-            cpu: json('.25')
-            memory: '.5Gi'
-          }
-        }
-      ]
-    }
+    userAssignedIdentity: uai.id
+    registryUrl: acr.properties.loginServer
+    containerImageName: 'azuredocs/containerapps-helloworld:latest'
   }
 }
 
-output containerAppFQDN string = containerApps.properties.configuration.ingress.fqdn
+module dockerhelloworld './aca.bicep' = {
+  name: 'docker-helloworld'
+  params: {
+    containerAppsName: 'ca-${appName}-cace-${environment}-01'
+    managedEnvironmentId: containerAppEnvironment.id
+    userAssignedIdentity: uai.id
+    registryUrl: acr.properties.loginServer
+    containerImageName: 'library/hello-world:latest'
+  }
+}
