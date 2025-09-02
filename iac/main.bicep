@@ -8,7 +8,7 @@ param environment string = 'dev'
 // 'azuredocs/containerapps-helloworld:latest'
 // 'nginxdemos/hello:0.4'
 // 'library/hello-world:latest'
-param containerImageName string = 'library/hello-world:latest'
+param containerImageName string = 'azuredocs/containerapps-helloworld:latest'
 
 var coreResourceGroup = 'rg-core-cace-${environment}-01'
 
@@ -90,11 +90,19 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
       ]
     }
     template: {
-      revisionSuffix: 'firstrevision'
+      revisionSuffix: 'rev1'
       containers: [
         {
-          name: containerAppsName
+          name: 'azuredocs-helloworld'
           image: '${acr.properties.loginServer}/${containerImageName}'
+          resources: {
+            cpu: json('.25')
+            memory: '.5Gi'
+          }
+        },
+         {
+          name: 'docker-helloworld'
+          image: '${acr.properties.loginServer}/library/hello-world:latest'
           resources: {
             cpu: json('.25')
             memory: '.5Gi'
