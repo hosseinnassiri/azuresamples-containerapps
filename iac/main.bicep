@@ -94,7 +94,7 @@ resource containerApps 'Microsoft.App/containerApps@2025-02-02-preview' = {
       containers: [
         {
           name: containerAppsName
-          image: '${acr.properties.loginServer}/${containerImageName}:latest'
+          image: '${acr.properties.loginServer}/${containerImageName}'
           resources: {
             cpu: json('.25')
             memory: '.5Gi'
