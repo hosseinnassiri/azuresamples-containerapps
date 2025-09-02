@@ -5,7 +5,10 @@ param appName string = 'containerapp'
 
 param environment string = 'dev'
 
-param containerImageName string = 'azuredocs/containerapps-helloworld'
+// 'azuredocs/containerapps-helloworld:latest'
+// 'nginxdemos/hello:0.4'
+// 'library/hello-world:latest'
+param containerImageName string = 'library/hello-world:latest'
 
 var coreResourceGroup = 'rg-core-cace-${environment}-01'
 
