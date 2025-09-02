@@ -5,11 +5,6 @@ param appName string = 'containerapp'
 
 param environment string = 'dev'
 
-// 'azuredocs/containerapps-helloworld:latest'
-// 'nginxdemos/hello:0.4'
-// 'library/hello-world:latest'
-param containerImageName string = 'azuredocs/containerapps-helloworld:latest'
-
 var coreResourceGroup = 'rg-core-cace-${environment}-01'
 
 var logAnalyticsWorkspaceName = 'log-core-cace-${environment}-01'
@@ -79,3 +74,7 @@ module dockerhelloworld './aca.bicep' = {
     containerImageName: 'library/hello-world:latest'
   }
 }
+
+// 'azuredocs/containerapps-helloworld:latest'
+// 'nginxdemos/hello:0.4'
+// 'library/hello-world:latest'
