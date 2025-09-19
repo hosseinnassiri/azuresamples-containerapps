@@ -71,7 +71,7 @@ module dockerhelloworld './aca.bicep' = {
     managedEnvironmentId: containerAppEnvironment.id
     userAssignedIdentity: uai.id
     registryUrl: acr.properties.loginServer
-    containerImageName: 'library/hello-world:latest'
+    containerImageName: 'nginxdemos/hello:0.4'
   }
 }
 
